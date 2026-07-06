@@ -1,64 +1,56 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Invitation</title>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #333; overflow: hidden; transition: background-color 0.5s; font-family: sans-serif; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #333; overflow: hidden; transition: background-color 0.5s; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        /* डार्क मोड स्टाइल */
         body.dark-mode { background-color: #121212; }
         
         .bg-blur { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('card.jpg'); background-size: cover; background-position: center; filter: blur(15px); transform: scale(1.1); transition: opacity 0.5s; }
         body.dark-mode .bg-blur { opacity: 0.5; }
 
-        /* काउंटडाउन बॉक्स */
-        .countdown-box { z-index: 2; margin-bottom: 20px; background: rgba(0, 0, 0, 0.6); padding: 10px 25px; border-radius: 12px; text-align: center; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 1px solid #d4af37; }
-        .countdown-box span { font-size: 20px; font-weight: bold; color: #d4af37; display: block; margin-top: 5px; letter-spacing: 1px; }
+        /* इंग्लिश काउंटडाउन बॉक्स */
+        .countdown-box { z-index: 2; margin-bottom: 20px; background: rgba(0, 0, 0, 0.7); padding: 12px 25px; border-radius: 12px; text-align: center; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 1px solid #d4af37; letter-spacing: 0.5px; }
+        .countdown-box .title { font-size: 14px; text-transform: uppercase; color: #ddd; }
+        .countdown-box span { font-size: 22px; font-weight: bold; color: #d4af37; display: block; margin-top: 5px; }
 
         .card-img { position: relative; max-width: 90%; max-height: 75vh; width: auto; height: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-radius: 10px; z-index: 1; }
 
-        /* थीम बटन (लेफ्ट सेंटर) */
-        .theme-btn { position: fixed; top: calc(50% - 40px); left: 20px; transform: translateY(-50%); background: #fff; color: #333; padding: 10px 15px; border-radius: 25px; cursor: pointer; border: none; font-weight: bold; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.3s; }
+        /* ========================================= */
+        /* बटन्स और डॉट (DOT) एनिमेशन स्टाइल (नीचे की तरफ) */
+        /* ========================================= */
+        
+        /* थीम बटन (Bottom Left) */
+        .theme-btn { position: fixed; bottom: 20px; left: 20px; background: #fff; color: #333; padding: 10px 15px; border-radius: 25px; cursor: pointer; border: none; font-weight: bold; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: all 0.4s ease; overflow: hidden; white-space: nowrap; display: flex; align-items: center; justify-content: center; }
         body.dark-mode .theme-btn { background: #333; color: #fff; border: 1px solid #777; }
 
-        /* फ्लोटिंग बबल बटन (लेफ्ट सेंटर) */
-        .float-btn { position: fixed; top: calc(50% + 40px); left: 20px; transform: translateY(-50%); width: 55px; height: 55px; background: #d4af37; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; z-index: 100; transition: 0.3s; }
+        /* फ्लोटिंग बबल बटन (Bottom Right) */
+        .float-btn { position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; background: #d4af37; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; z-index: 100; transition: all 0.4s ease; overflow: hidden; }
         
-        .menu { position: fixed; top: calc(50% + 40px); left: 85px; transform: translateY(-50%); display: none; flex-direction: column; gap: 10px; z-index: 99; }
+        /* जब बटन 1 सेकंड बाद डॉट बन जाएंगे */
+        .dot-mode { width: 12px !important; height: 12px !important; padding: 0 !important; font-size: 0 !important; color: transparent !important; border-radius: 50% !important; background-color: #d4af37 !important; border: none !important; opacity: 0.6; min-width: 0 !important; }
+        body.dark-mode .dot-mode { background-color: #fff !important; }
+
+        /* मेनू जो प्लस बटन के ऊपर खुलेगा */
+        .menu { position: fixed; bottom: 90px; right: 20px; display: none; flex-direction: column; gap: 10px; z-index: 99; }
         .menu a { padding: 10px 20px; border-radius: 20px; text-decoration: none; color: white; font-weight: bold; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); text-align: center; white-space: nowrap; }
         .wa { background: #25d366; }
         .ig { background: #e1306c; }
 
-        /* ========================================= */
-        /* EXPIRY SCREEN STYLES (नया एक्सपायरी डिज़ाइन) */
-        /* ========================================= */
-        #expired-container {
-            display: none; /* शुरू में छुपा रहेगा */
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            z-index: 200;
-            background: rgba(18, 18, 18, 0.95);
-            padding: 30px 20px;
-            border-radius: 15px;
-            border: 2px solid #d4af37;
-            max-width: 90%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            color: white;
-        }
-        
+        /* एक्सपायरी स्क्रीन (इंग्लिश डिज़ाइन) */
+        #expired-container { display: none; flex-direction: column; align-items: center; text-align: center; z-index: 200; background: rgba(18, 18, 18, 0.95); padding: 30px 20px; border-radius: 15px; border: 2px solid #d4af37; max-width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.8); color: white; }
         #expired-container h2 { color: #d4af37; margin: 0 0 10px 0; font-size: 22px; }
         #expired-container p { font-size: 15px; line-height: 1.5; margin: 0 0 20px 0; color: #ddd; }
         .contact-number { font-size: 28px; font-weight: bold; margin-bottom: 25px; letter-spacing: 1px; color: #fff; }
-        
         .exp-buttons { display: flex; flex-direction: column; gap: 15px; width: 100%; margin-bottom: 30px; }
         .exp-buttons a { padding: 15px; border-radius: 10px; text-decoration: none; color: white; font-weight: bold; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: center; align-items: center; }
         .exp-wa { background: #25d366; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); }
         .exp-ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); box-shadow: 0 4px 15px rgba(225, 48, 108, 0.4); }
 
-        /* CASIO DIGITAL CLOCK STYLES */
+        /* CASIO DIGITAL CLOCK */
         .casio-watch { background: #111; border: 4px solid #444; border-radius: 8px; padding: 15px 25px; box-shadow: inset 0 0 10px #000, 0 5px 15px rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; border-bottom: 8px solid #222; }
         .casio-brand { color: #888; font-family: 'Arial', sans-serif; font-size: 12px; letter-spacing: 3px; margin-bottom: 8px; font-weight: bold; }
         .casio-screen { background: #8fb38f; padding: 10px 20px; border-radius: 4px; box-shadow: inset 0 0 8px rgba(0,0,0,0.6); border: 2px solid #555; }
@@ -69,36 +61,29 @@
 
     <div class="bg-blur"></div>
 
-    <!-- 1. नॉर्मल स्क्रीन (कार्ड और टाइमर) -->
     <div class="countdown-box" id="countdown-box">
-        शादी में बचा समय: <span id="timer">लोड हो रहा है...</span>
+        <div class="title">Time left for the Wedding:</div>
+        <span id="timer">Loading...</span>
     </div>
     
     <img src="card.jpg" class="card-img" id="myCard" alt="Wedding Invitation">
 
-    <button class="theme-btn" id="btn-theme" onclick="document.body.classList.toggle('dark-mode')">🌓 Theme</button>
-    <div class="float-btn" id="btn-float" onclick="toggleMenu()">+</div>
+    <button class="theme-btn" id="btn-theme" onclick="handleThemeClick(this)">🌓 Theme</button>
+    <div class="float-btn" id="btn-float" onclick="handleMenuClick(this)">+</div>
     
     <div class="menu" id="menu">
         <a href="https://wa.me/919079761779" class="wa">WhatsApp</a>
         <a href="https://www.instagram.com/hariomdeg.cre.invitation?igsh=MWdnbmxqcDJ2MHlsOQ==" class="ig">Instagram</a>
     </div>
 
-    <!-- 2. एक्सपायरी स्क्रीन (जो डेट निकलने के बाद दिखेगी) -->
     <div id="expired-container">
         <h2>Want to create your own Digital Invitation?</h2>
         <p>For more information or to place an order, please contact us below:</p>
-        
-        <!-- मोबाइल नंबर -->
         <div class="contact-number">📞 +91 9079761779</div>
-        
-        <!-- बटन्स -->
         <div class="exp-buttons">
             <a href="https://wa.me/919079761779" class="exp-wa">WhatsApp - For Info & Order</a>
             <a href="https://www.instagram.com/hariomdeg.cre.invitation?igsh=MWdnbmxqcDJ2MHlsOQ==" class="exp-ig">Instagram - For Catalog</a>
         </div>
-
-        <!-- कैसियो घड़ी -->
         <div class="casio-watch">
             <div class="casio-brand">CASIO</div>
             <div class="casio-screen">
@@ -107,69 +92,102 @@
         </div>
     </div>
 
-    <!-- मुख्य लॉजिक -->
+    <!-- लॉजिक (इस हिस्से को न छुएं) -->
     <script>
-        function toggleMenu() {
+        // 1. ऑटो हाइड (Dot) लॉजिक
+        let idleTimer;
+        function resetIdleTimer() {
+            const themeBtn = document.getElementById('btn-theme');
+            const floatBtn = document.getElementById('btn-float');
+            
+            // बटन को वापस बड़ा करें
+            themeBtn.classList.remove('dot-mode');
+            floatBtn.classList.remove('dot-mode');
+            
+            clearTimeout(idleTimer);
+            // 1.5 सेकंड (1500ms) बाद वापस डॉट बना दें
+            idleTimer = setTimeout(() => {
+                themeBtn.classList.add('dot-mode');
+                floatBtn.classList.add('dot-mode');
+                document.getElementById('menu').style.display = 'none'; // मेनू भी बंद कर दें
+            }, 1500);
+        }
+        
+        // स्क्रीन पर कहीं भी क्लिक/टच करने से बटन खुल जाएंगे
+        document.body.addEventListener('click', resetIdleTimer);
+        document.body.addEventListener('touchstart', resetIdleTimer);
+        window.onload = resetIdleTimer;
+
+        // थीम और मेनू क्लिक
+        function handleThemeClick(btn) {
+            if (btn.classList.contains('dot-mode')) return; // अगर डॉट है तो सिर्फ खुलेगा, थीम चेंज नहीं होगी
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function handleMenuClick(btn) {
+            if (btn.classList.contains('dot-mode')) return;
             var menu = document.getElementById('menu');
             menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
         }
 
-        // कैसियो घड़ी को अपडेट करने का फंक्शन (Indian Standard Time)
+        // 2. कैसियो घड़ी लॉजिक (Real Indian Time)
         function updateCasioClock() {
             const now = new Date();
             const options = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
             document.getElementById('real-time-clock').innerText = now.toLocaleTimeString('en-US', options);
         }
         setInterval(updateCasioClock, 1000);
-        updateCasioClock(); // तुरंत स्टार्ट करने के लिए
+        updateCasioClock();
 
+        // 3. आसान डेट कनवर्टर लॉजिक (DD/MM/YYYY)
+        function createDate(dateStr, timeStr) {
+            const d = dateStr.split('/');
+            const t = timeStr.split(':');
+            return new Date(d[2], d[1] - 1, d[0], t[0], t[1]).getTime();
+        }
+
+        // 4. काउंटडाउन और एक्सपायरी ऐप लॉजिक
         function startApp(weddingDate, expiryDate) {
             const timerInterval = setInterval(function() {
                 const now = new Date().getTime();
                 
-                // अगर डेट निकल गई (EXPIRY LOGIC)
                 if (now > expiryDate) {
-                    // पुरानी चीजें छुपा दो
                     document.getElementById("myCard").style.display = "none";
                     document.getElementById("countdown-box").style.display = "none"; 
                     document.getElementById("btn-theme").style.display = "none"; 
                     document.getElementById("btn-float").style.display = "none"; 
                     document.getElementById("menu").style.display = "none"; 
-                    
-                    // नया एक्सपायरी कंटेनर दिखा दो
                     document.getElementById("expired-container").style.display = "flex";
-                    
-                    // डार्क मोड भी ऑन कर दो ताकि घड़ी अच्छी दिखे
-                    document.body.classList.add('dark-mode'); 
-                    
+                    document.body.classList.add('dark-mode'); // घड़ी को सुंदर दिखाने के लिए डार्क मोड
                     clearInterval(timerInterval);
                     return;
                 }
 
-                // अगर डेट नहीं निकली है (COUNTDOWN LOGIC)
                 const distance = weddingDate - now;
                 if (distance < 0) {
-                    document.getElementById("timer").innerHTML = "कार्यक्रम शुरू हो चुका है! 🎉";
+                    document.getElementById("timer").innerHTML = "The Wedding has Started! 🎉";
                 } else {
                     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    document.getElementById("timer").innerHTML = days + " दिन " + hours + " घंटे " + minutes + " मिनट " + seconds + " सेकंड";
+                    document.getElementById("timer").innerHTML = days + " Days " + hours + " Hrs " + minutes + " Mins " + seconds + " Secs";
                 }
             }, 1000);
         }
     </script>
 
     <!-- ============================================== -->
-    <!--  यहाँ से आप अपनी तारीख़ बदल सकते हैं (सबसे नीचे) -->
+    <!--  यहाँ से अपनी तारीख़ बदलें (सबसे आसान तरीका) -->
     <!-- ============================================== -->
     <script>
-        // 1. शादी की तारीख (Format: YYYY-MM-DDTHH:MM:SS)
-        const myWeddingDate = new Date("2026-06-04T18:00:00").getTime(); 
+        // 1. शादी की तारीख (Format: DD/MM/YYYY) और (Time: 24-hour format)
+        // जैसे 15 जुलाई 2026, शाम 6 बजे के लिए -> ("15/07/2026", "18:00")
+        const myWeddingDate = createDate("15/07/2026", "18:00"); 
 
         // 2. एक्सपायरी डेट (जब कार्ड हटना चाहिए)
-        const myExpiryDate = new Date("2026-07-01T00:00:00").getTime(); 
+        // जैसे 30 जुलाई 2026, रात 12 बजे -> ("30/07/2026", "00:00")
+        const myExpiryDate = createDate("30/07/2026", "00:00"); 
         
         // सिस्टम चालू करें
         startApp(myWeddingDate, myExpiryDate);
